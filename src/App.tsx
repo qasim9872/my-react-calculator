@@ -1,6 +1,6 @@
-import "styles/global.css";
+import 'styles/global.css';
 
-import Home from "pages";
+import Home from './pages/home.page';
 
 function App(): JSX.Element {
   return (
