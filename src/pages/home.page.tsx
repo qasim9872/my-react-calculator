@@ -1,7 +1,11 @@
 import React from 'react';
 
 const Home: React.FC = () => {
-  return <div>Hello World</div>;
+  return (
+    <div className="flex flex-grow justify-center items-center">
+      Hello World
+    </div>
+  );
 };
 
 export default Home;

@@ -4,7 +4,7 @@ import Home from './pages/home.page';
 
 function App(): JSX.Element {
   return (
-    <div className="App">
+    <div className="h-screen flex">
       <Home />
     </div>
   );
