@@ -5,39 +5,50 @@ import { CalculatorScreen } from './ui/calculator-screen';
 import { CalculatorKeypad } from './ui/calculator-keypad';
 
 import { KEYS, OPERATOR, OPERATORS } from '../constants/operators';
-import { isOperator, OPERATOR_MAP } from '../utils/calculator.utils';
+import { isOperator } from '../utils/calculator.utils';
+import { useCalculator } from '../hooks/use-calculator';
 
 export const Calculator: React.FC = () => {
-  const [displayResult, setDisplayResult] = useState(false);
-  const [result, setResult] = useState(0);
   const [value, setValue] = useState(0);
   const [operator, setOperator] = useState<OPERATOR>();
+  const [numberOfOperations, setNumberOfOperations] = useState(0);
+  const { currentValue, ...operations } = useCalculator();
 
   useEffect(() => {
     if (!operator) return;
     console.log(`executing operation for: ${operator}`);
 
-    if (operator === OPERATORS.EQUAL) {
-      setDisplayResult(true);
-      return;
-    }
-
-    const operation = OPERATOR_MAP[operator];
+    const operation = operations[operator];
     if (!operation) {
       throw new Error(`no operation found for ${operator}`);
     }
 
+    operation(value);
+
+    // reset value
     setValue(0);
-    setResult((previousResult) => operation(previousResult, value));
+
+    if (operator === OPERATORS.EQUAL) {
+      console.log(`calculating final answer`);
+      setValue(currentValue);
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [operator]);
+  }, [operator, numberOfOperations]);
 
   const onKeyPressed = (key: string) => {
     console.log(`user pressed: ${key}`);
 
-    isOperator(key)
-      ? setOperator(key)
-      : setValue(Number(String(value) + String(key)));
+    if (isOperator(key)) {
+      setOperator(key);
+
+      // updating this to trigger a rerun of the operator hook when the same operator is clicked multiple times
+      setNumberOfOperations(
+        (previousNumberOfOperations) => previousNumberOfOperations + 1
+      );
+    } else {
+      setValue(Number(String(value) + String(key)));
+    }
   };
 
   return (
@@ -47,10 +58,7 @@ export const Calculator: React.FC = () => {
         'flex flex-col justify-between items-center'
       )}
     >
-      <CalculatorScreen
-        operator={operator}
-        value={displayResult ? result : value}
-      />
+      <CalculatorScreen operator={operator} value={value} />
 
       <CalculatorKeypad keys={KEYS} keyPressed={onKeyPressed} />
     </div>
