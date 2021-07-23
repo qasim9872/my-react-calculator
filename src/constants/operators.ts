@@ -1,10 +1,14 @@
-export const OPERATORS = {
+export type OPERATOR = '+' | '-' | 'x' | '/' | '=';
+
+export const OPERATORS: { [key: string]: OPERATOR } = {
   ADDITION: '+',
   SUBTRACTION: '-',
   MULTIPLICATION: 'x',
   DIVISION: '/',
   EQUAL: '=',
 };
+
+export const OPERATOR_VALUES = Object.values(OPERATORS);
 
 export const KEYS = [
   '7',
