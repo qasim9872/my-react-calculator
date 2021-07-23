@@ -1,10 +1,11 @@
-export type OPERATOR = '+' | '-' | 'x' | '/' | '=';
+export type OPERATOR = '+' | '-' | 'x' | '/' | '=' | 'C';
 
 export const OPERATORS: { [key: string]: OPERATOR } = {
   ADDITION: '+',
   SUBTRACTION: '-',
   MULTIPLICATION: 'x',
   DIVISION: '/',
+  CLEAR: 'C',
   EQUAL: '=',
 };
 
@@ -23,8 +24,8 @@ export const KEYS = [
   '2',
   '3',
   OPERATORS.SUBTRACTION,
+  OPERATORS.CLEAR,
   '0',
-  '.',
   OPERATORS.EQUAL,
   OPERATORS.ADDITION,
 ];
