@@ -6,52 +6,64 @@ import { CalculatorKeypad } from './ui/calculator-keypad';
 
 import { KEYS, OPERATOR, OPERATORS } from '../constants/operators';
 import { isOperator } from '../utils/calculator.utils';
-import { useCalculator } from '../hooks/use-calculator';
 
 export const Calculator: React.FC = () => {
   const [value, setValue] = useState(0);
-  const [lastOperator, setLastOperator] = useState<OPERATOR>();
+  const [calculatorString, setCalculatorString] = useState('');
   const [operator, setOperator] = useState<OPERATOR>();
   const [numberOfOperations, setNumberOfOperations] = useState(0);
-  const { currentValue, ...operations } = useCalculator();
 
   useEffect(() => {
     if (!operator) return;
 
-    let operatorToUse = operator;
-    if (operator === OPERATORS.EQUAL) {
-      console.log(
-        `calculating final answer - will use last operator ${lastOperator}`
-      );
-      operatorToUse = lastOperator;
+    console.log(`in first use effect hook`);
+
+    if (operator === OPERATORS.CLEAR) {
+      console.log(`clearing screen value`);
+
+      setCalculatorString('');
+      setValue(0);
+      setOperator(null);
+      return;
     }
 
-    console.log(`executing operation for: ${operatorToUse}`);
-    const operation = operations[operatorToUse];
-    if (!operation) {
-      throw new Error(`no operation found for ${operatorToUse}`);
-    }
+    console.log(`updating calculator string`);
 
-    console.log(`${currentValue} ${operatorToUse} ${value}`);
-    operation(value);
+    setCalculatorString((previousCalculatorString) => {
+      const calculatorStringArray = [];
 
-    // reset value
+      console.log({ previousCalculatorString });
+      if (previousCalculatorString) {
+        calculatorStringArray.push(previousCalculatorString);
+      }
+
+      calculatorStringArray.push(value);
+      calculatorStringArray.push(operator);
+
+      console.log(`setting calculator string`, calculatorStringArray);
+
+      return calculatorStringArray.join('');
+    });
+
+    console.log(`resetting screen value`);
     setValue(0);
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [operator, numberOfOperations]);
 
   useEffect(() => {
     if (operator === OPERATORS.EQUAL) {
-      console.log(`displaying final answer`);
-      setValue(currentValue);
+      console.log(`evaluating final result`, calculatorString);
+      // eslint-disable-next-line no-eval
+      const result = eval(calculatorString);
+      setValue(result);
     }
-  }, [currentValue, operator]);
+  }, [operator, calculatorString]);
 
   const onKeyPressed = (key: string) => {
     console.log(`user pressed: ${key}`);
 
     if (isOperator(key)) {
-      operator && setLastOperator(operator);
       setOperator(key);
 
       // updating this to trigger a rerun of the operator hook when the same operator is clicked multiple times
