@@ -1,5 +1,6 @@
 {
   "name": "my-react-calculator",
+  "homepage": "https://qasim9872.github.io/my-react-calculator",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
