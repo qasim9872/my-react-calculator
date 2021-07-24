@@ -11,6 +11,7 @@ export const Calculator: React.FC = () => {
   const [value, setValue] = useState(0);
   const [calculatorStringArray, setCalculatorStringArray] = useState([]);
   const [operator, setOperator] = useState<OPERATOR>();
+  const [operatorCount, setOperatorCount] = useState(0);
 
   useEffect(() => {
     if (!operator) return;
@@ -28,7 +29,7 @@ export const Calculator: React.FC = () => {
 
     console.log(`resetting screen value`);
     setValue(0);
-  }, [operator]);
+  }, [operator, operatorCount]);
 
   useEffect(() => {
     console.log(`calculatorStringArray is`, calculatorStringArray);
@@ -53,6 +54,7 @@ export const Calculator: React.FC = () => {
 
     if (isOperator(key)) {
       setOperator(key);
+      setOperatorCount((previousCount) => previousCount + 1);
     } else {
       setValue(Number(String(value) + String(key)));
     }
