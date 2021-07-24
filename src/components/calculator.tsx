@@ -9,7 +9,7 @@ import { isOperator } from '../utils/calculator.utils';
 
 export const Calculator: React.FC = () => {
   const [value, setValue] = useState(0);
-  const [calculatorString, setCalculatorString] = useState('');
+  const [calculatorStringArray, setCalculatorStringArray] = useState([]);
   const [operator, setOperator] = useState<OPERATOR>();
   const [numberOfOperations, setNumberOfOperations] = useState(0);
 
@@ -21,28 +21,20 @@ export const Calculator: React.FC = () => {
     if (operator === OPERATORS.CLEAR) {
       console.log(`clearing screen value`);
 
-      setCalculatorString('');
       setValue(0);
       setOperator(null);
+      setCalculatorStringArray([]);
       return;
     }
 
-    console.log(`updating calculator string`);
+    console.log(`updating calculator string array`);
+    setCalculatorStringArray((previousCalculatorStringArray) => {
+      console.log(`value and operator are added to calculator string array`, {
+        value,
+        operator,
+      });
 
-    setCalculatorString((previousCalculatorString) => {
-      const calculatorStringArray = [];
-
-      console.log({ previousCalculatorString });
-      if (previousCalculatorString) {
-        calculatorStringArray.push(previousCalculatorString);
-      }
-
-      calculatorStringArray.push(value);
-      calculatorStringArray.push(operator);
-
-      console.log(`setting calculator string`, calculatorStringArray);
-
-      return calculatorStringArray.join('');
+      return [...previousCalculatorStringArray, value, operator];
     });
 
     console.log(`resetting screen value`);
@@ -52,13 +44,15 @@ export const Calculator: React.FC = () => {
   }, [operator, numberOfOperations]);
 
   useEffect(() => {
+    console.log(`calculatorStringArray is`, calculatorStringArray);
+
     if (operator === OPERATORS.EQUAL) {
-      console.log(`evaluating final result`, calculatorString);
+      console.log(`evaluating final result`, calculatorStringArray);
       // eslint-disable-next-line no-eval
-      const result = eval(calculatorString);
+      const result = eval(calculatorStringArray.join(''));
       setValue(result);
     }
-  }, [operator, calculatorString]);
+  }, [operator, calculatorStringArray]);
 
   const onKeyPressed = (key: string) => {
     console.log(`user pressed: ${key}`);
