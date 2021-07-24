@@ -1,9 +1,9 @@
-export type OPERATOR = '+' | '-' | 'x' | '/' | '=' | 'C';
+export type OPERATOR = '+' | '-' | '*' | '/' | '=' | 'C';
 
 export const OPERATORS: { [key: string]: OPERATOR } = {
   ADDITION: '+',
   SUBTRACTION: '-',
-  MULTIPLICATION: 'x',
+  MULTIPLICATION: '*',
   DIVISION: '/',
   CLEAR: 'C',
   EQUAL: '=',

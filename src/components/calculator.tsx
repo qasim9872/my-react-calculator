@@ -11,7 +11,6 @@ export const Calculator: React.FC = () => {
   const [value, setValue] = useState(0);
   const [calculatorStringArray, setCalculatorStringArray] = useState([]);
   const [operator, setOperator] = useState<OPERATOR>();
-  const [numberOfOperations, setNumberOfOperations] = useState(0);
 
   useEffect(() => {
     if (!operator) return;
@@ -27,29 +26,24 @@ export const Calculator: React.FC = () => {
       return;
     }
 
-    console.log(`updating calculator string array`);
-    setCalculatorStringArray((previousCalculatorStringArray) => {
-      console.log(`value and operator are added to calculator string array`, {
-        value,
-        operator,
-      });
-
-      return [...previousCalculatorStringArray, value, operator];
-    });
-
     console.log(`resetting screen value`);
     setValue(0);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [operator, numberOfOperations]);
+  }, [operator]);
 
   useEffect(() => {
     console.log(`calculatorStringArray is`, calculatorStringArray);
 
     if (operator === OPERATORS.EQUAL) {
       console.log(`evaluating final result`, calculatorStringArray);
+
+      const evalString = calculatorStringArray
+        .filter((key) => key !== OPERATORS.EQUAL)
+        .join('');
+
+      console.log(`evaluating string`, evalString);
+
       // eslint-disable-next-line no-eval
-      const result = eval(calculatorStringArray.join(''));
+      const result = eval(evalString);
       setValue(result);
     }
   }, [operator, calculatorStringArray]);
@@ -59,14 +53,11 @@ export const Calculator: React.FC = () => {
 
     if (isOperator(key)) {
       setOperator(key);
-
-      // updating this to trigger a rerun of the operator hook when the same operator is clicked multiple times
-      setNumberOfOperations(
-        (previousNumberOfOperations) => previousNumberOfOperations + 1
-      );
     } else {
       setValue(Number(String(value) + String(key)));
     }
+
+    calculatorStringArray.push(key);
   };
 
   return (
